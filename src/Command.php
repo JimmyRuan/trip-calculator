@@ -23,7 +23,7 @@ if(filesize($storeFileName) >= 1){
     $storeJson = json_decode($content, true);
 }
 
-if(! in_array($firstArgument, ['Driver', 'Trip'])){
+if(! in_array($firstArgument, ['Driver', 'Trip', 'Calculate'])){
     die('Please use either "Driver" or "Trip" command');
 }
 
@@ -69,14 +69,18 @@ if($firstArgument == 'Trip'){
 
     $totalHours =  (strtotime($endTime) - strtotime($startTime))/(60*60);
 
-    if(! isset($storeJson['trips'][$driverName])){
-        $storeJson['trips'][$driverName] = [];
-    }
+    $mph = round(round($totalMilesDriven)/$totalHours);
 
-    $storeJson['trips'][$driverName][] = [
-        'total_hours' => $totalHours,
-        'total_miles' => $totalMilesDriven
-    ];
+    if($mph >= 5 && $mph <= 100){
+        if(! isset($storeJson['trips'][$driverName])){
+            $storeJson['trips'][$driverName] = [];
+        }
+
+        $storeJson['trips'][$driverName][] = [
+            'total_hours' => $totalHours,
+            'total_miles' => $totalMilesDriven
+        ];
+    }
 }
 
 $storeJsonEncoded = json_encode($storeJson, JSON_PRETTY_PRINT);
@@ -87,7 +91,55 @@ file_put_contents($storeFileName, $storeJsonEncoded);
 //fclose($store);
 
 
-if(count($argv) == 1 && !empty($storeJson)){
+function showResult($name, $miles, $mph=0){
+    if($miles === 0 || $mph === 0){
+        echo "$name: $miles miles";
+    }else{
+        echo "$name: $miles miles @ $mph mph";
+    }
+
+}
+
+if($firstArgument == 'Calculate'){
+    if(! isset($storeJson['trips']) ||
+        empty($storeJson['trips']) ||
+       ! is_array($storeJson['trips'])){
+        die('There is no trips specified so far');
+    }
+
+    $results = [];
+
+    foreach($storeJson['drivers'] as $driverName){
+        $totalTime = 0;
+        $totalMiles = 0;
+        $trips = $storeJson['trips'][$driverName] ?? null;
+
+        if(! $trips){
+            showResult($driverName, $totalMiles, $totalTime);
+            continue;
+        }
+
+        foreach($trips as $trip){
+            $totalTime = $totalTime + $trip['total_hours'];
+            $totalMiles = round($totalMiles + $trip['total_miles']);
+        }
+
+        $mph = round($totalMiles/$totalTime);
+
+
+        $results[] = [
+            'name' => $driverName,
+            'miles' => $totalMiles,
+            'mph' => $mph,
+        ];
+
+        echo "$driverName: $totalMiles miles @ $mph \n";
+    }
+
+    //var_dump($results);
+   // die('the results is at 116');
+
+
 
 }
 
