@@ -1,0 +1,7 @@
+## How to run tests?
+>> composer install
+>> vendor/bin/phpunit tests
+
+
+## How to run the command?
+>> php venbdor.
