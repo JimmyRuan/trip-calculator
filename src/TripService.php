@@ -179,5 +179,10 @@ Class TripService {
         }
     }
 
+    public function getStoreData()
+    {
+        return $this->trip->toArray();
+    }
+
 
 }

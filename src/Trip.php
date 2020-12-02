@@ -70,7 +70,7 @@ Class Trip {
         return json_encode($this->store, JSON_PRETTY_PRINT);
     }
 
-    protected function printResult(TripResultDataTransferObject $result)
+    protected static function printResult(TripResultDataTransferObject $result)
     {
         if($result->totalMilesDriven === 0 || $result->mph === 0){
             print("$result->driverName: $result->totalMilesDriven miles\n");
@@ -79,10 +79,10 @@ Class Trip {
         }
     }
 
-    protected function printAllResult(array $results)
+    public static function printAllResult(array $results)
     {
         foreach($results as $result){
-            $this->printResult($result);
+            self::printResult($result);
         }
     }
 
@@ -129,7 +129,7 @@ Class Trip {
             });
         }
 
-        $this->printAllResult($result);
+        self::printAllResult($result);
         return $result;
     }
 }
