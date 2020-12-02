@@ -20,7 +20,7 @@ class TripDataTransferObject {
 
     public function __construct($driverName, $totalHours, $totalMilesDriven)
     {
-        $this->driverName = $driverName;
+        $this->driverName = trim($driverName);
         $this->totalHours = $totalHours;
         $this->totalMilesDriven = $totalMilesDriven;
     }

@@ -22,7 +22,7 @@ Class Trip {
         }
 
         if(! in_array($driverName, $this->store['drivers'])){
-            $this->store['drivers'][] = $driverName;
+            $this->store['drivers'][] = trim($driverName);
         }
 
         return $this;

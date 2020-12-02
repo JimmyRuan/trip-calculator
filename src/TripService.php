@@ -25,6 +25,11 @@ Class TripService {
 
         $actionName = $this->arguments[1];
 
+        //it is an input file
+        if(count($this->arguments) == 2){
+            return $actionName;
+        }
+
         if(! $this->trip->isValidTripCommand($actionName)){
             die('Please use valid command');
         }
@@ -48,18 +53,19 @@ Class TripService {
     public function processCommand()
     {
         $actionName = $this->getActionName();
-        if($actionName == Trip::ADD_DRIVER){
-            $this->processAddDriverCommand();
-            return $this;
-        }
 
-        if($actionName == Trip::ADD_TRIP){
-            $this->processTripCommand();
-            return $this;
-        }
-
-        if($actionName == Trip::CALCULATE) {
-            $this->trip->showAllResult();
+        switch ($actionName) {
+            case Trip::ADD_DRIVER:
+                $this->processAddDriverCommand();
+                break;
+            case Trip::ADD_TRIP:
+                $this->processTripCommand();
+                break;
+            case Trip::CALCULATE:
+                $this->trip->showAllResult();
+                break;
+            default:
+                $this->processInputFile($actionName);
         }
 
         $this->clearInput();
@@ -108,6 +114,12 @@ Class TripService {
         file_put_contents($this->storeName, $this->trip->toJson());
     }
 
+    public function clearStoreData()
+    {
+        file_put_contents($this->storeName, '');
+        $this->trip = new Trip([]);
+    }
+
     public function clearInput() : self
     {
         $this->arguments = null;
@@ -141,6 +153,30 @@ Class TripService {
 
         $this->trip->addTrip($tripData);
         $this->storeData();
+    }
+
+    protected function processInputFile($filePath)
+    {
+        if(! file_exists($filePath)){
+            die('Cannot find the input file na');
+        }
+
+        $handle = fopen($filePath, "r");
+        if ($handle) {
+            $this->clearStoreData();
+            while (($line = fgets($handle)) !== false) {
+                // process the line read.
+                $line = "oneFile " . $line;
+                $arguments = explode(' ', $line);
+                $this->updateInput($arguments)->processCommand();
+            }
+
+            $this->trip->showAllResult();
+
+            fclose($handle);
+        } else {
+            die('Cannot read the input file');
+        }
     }
 
 
