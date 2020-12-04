@@ -19,18 +19,18 @@ Class TripService {
 
     public function getActionName()
     {
-        if(count($this->arguments) < 2){
+        if(count($this->arguments) < 1){
             die('Please specify arguments for the command');
         }
 
-        $actionName = $this->arguments[1];
+        $actionName = $this->arguments[0];
 
         //it is an input file
-        if(count($this->arguments) == 2){
+        if(count($this->arguments) == 1){
             return $actionName;
         }
 
-        if(! $this->trip->isValidTripCommand($actionName)){
+        if(! $this->trip->isValidCommand($actionName)){
             die('Please use valid command');
         }
 
@@ -80,21 +80,21 @@ Class TripService {
 
     public function getDriverName()
     {
-        if(count($this->arguments) !== 3){
+        if(count($this->arguments) !== 2){
             die('Please specify the driver name ');
         }
 
-        return $this->arguments[2];
+        return $this->arguments[1];
     }
 
     public function validateTripCommandArguments($arguments) : ?TripDataTransferObject
     {
         //Trip Dan 07:15 07:45 17.3
-        //  1  2     3     4     5
-        $driverName = $arguments[2];
-        $startTime = strtotime($arguments[3]);
-        $endTime = strtotime($arguments[4]);
-        $totalMilesDriven = floatval($arguments[5]);
+        //  0   1    2     3     4
+        $driverName = $arguments[1];
+        $startTime = strtotime($arguments[2]);
+        $endTime = strtotime($arguments[3]);
+        $totalMilesDriven = floatval($arguments[4]);
 
         if($driverName && $startTime && $endTime && $totalMilesDriven){
             $totalHours = $this->getTotalHours($startTime, $endTime);
@@ -132,7 +132,17 @@ Class TripService {
 
     public function updateInput(array $arguments) : self
     {
-        $this->arguments = $arguments;
+        if(empty($arguments)){
+            die('the input is invalid');
+        }
+
+        if(strpos($arguments[0], 'Command.php') !== false){
+            array_shift($arguments);
+            $this->arguments = $arguments;
+        }else{
+            $this->arguments = $arguments;
+        }
+
         return $this;
     }
 
@@ -145,7 +155,7 @@ Class TripService {
 
     protected function processTripCommand(): void
     {
-        if (count($this->arguments) !== 6) {
+        if (count($this->arguments) !== 5) {
             die('Please specify "Trip" arguments');
         }
 
@@ -169,7 +179,7 @@ Class TripService {
             $this->clearStoreData();
             while (($line = fgets($handle)) !== false) {
                 // process the line read.
-                $line = "oneFile " . $line;
+//                $line = "oneFile " . $line;
                 $arguments = explode(' ', $line);
                 $this->updateInput($arguments)->processCommand();
             }

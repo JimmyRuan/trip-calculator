@@ -46,7 +46,7 @@ Class Trip {
         return $this;
     }
 
-    public function isValidTripCommand($actionName)
+    public function isValidCommand($actionName)
     {
         return in_array($actionName, $this->availableCommands());
     }
