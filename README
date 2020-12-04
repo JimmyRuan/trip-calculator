@@ -18,6 +18,9 @@ in the storage file. In order to calculate the final results,
 please use the "Calculate" command.
 >> php src/Command.php Calculate
 
+4. Reset the storage file, so we can retest "Driver" and "Trip" command
+>> php src/Command.php Reset
+
 
 
 ### How to run the command to process input file?

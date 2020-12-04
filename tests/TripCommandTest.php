@@ -14,7 +14,7 @@ class TripCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->tripService = new TripService('testing.json');
+        $this->tripService = new TripService(__DIR__ .'/testing.json');
         $this->tripService->clearStoreData();
     }
 

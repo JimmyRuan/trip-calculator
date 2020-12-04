@@ -2,3 +2,4 @@ vendor
 .idea
 store.json
 testing.json
+tmp-store.json

@@ -65,9 +65,13 @@ Class TripService {
                 $results = $this->trip->extractResults();
                 Trip::printAllResult($results);
                 break;
+            case Trip::RESET_STORE:
+                $this->clearStoreData();
+                break;
             default:
-                $this->processInputFile($actionName);
-                $results = $this->trip->extractResults();
+                $tripService = new TripService('tmp-store.json');
+                $tripService->processInputFile($actionName);
+                $results = $tripService->getCalculatedResults();
                 Trip::printAllResult($results);
         }
 

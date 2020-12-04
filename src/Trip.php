@@ -9,6 +9,7 @@ Class Trip {
     public const ADD_DRIVER= 'Driver';
     public const ADD_TRIP = 'Trip';
     public const CALCULATE = 'Calculate';
+    public const RESET_STORE = 'Reset';
 
     public function __construct(?array $store)
     {
@@ -56,7 +57,8 @@ Class Trip {
         return [
             self::ADD_DRIVER,
             self::ADD_TRIP,
-            self::CALCULATE
+            self::CALCULATE,
+            self::RESET_STORE,
         ];
     }
 
