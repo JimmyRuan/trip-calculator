@@ -62,10 +62,13 @@ Class TripService {
                 $this->processTripCommand();
                 break;
             case Trip::CALCULATE:
-                $this->trip->showAllResult();
+                $results = $this->trip->extractResults();
+                Trip::printAllResult($results);
                 break;
             default:
                 $this->processInputFile($actionName);
+                $results = $this->trip->extractResults();
+                Trip::printAllResult($results);
         }
 
         $this->clearInput();
@@ -155,10 +158,10 @@ Class TripService {
         $this->storeData();
     }
 
-    protected function processInputFile($filePath)
+    public function processInputFile($filePath)
     {
         if(! file_exists($filePath)){
-            die('Cannot find the input file na');
+            die('Cannot find the input file ' . $filePath);
         }
 
         $handle = fopen($filePath, "r");
@@ -170,9 +173,6 @@ Class TripService {
                 $arguments = explode(' ', $line);
                 $this->updateInput($arguments)->processCommand();
             }
-
-            $this->trip->showAllResult();
-
             fclose($handle);
         } else {
             die('Cannot read the input file');
@@ -182,6 +182,11 @@ Class TripService {
     public function getStoreData()
     {
         return $this->trip->toArray();
+    }
+
+    public function getCalculatedResults()
+    {
+        return $this->trip->extractResults();
     }
 
 

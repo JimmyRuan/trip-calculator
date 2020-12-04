@@ -24,7 +24,7 @@ class TripCommandTest extends TestCase
         $this->tripService->clearStoreData();
     }
 
-    public function testAddDrivers()
+    public function testAddDrivers(): void
     {
         $driverNames = ['Dan', 'Lauren', 'Kumi'];
         foreach ($driverNames as $driverName) {
@@ -76,11 +76,41 @@ class TripCommandTest extends TestCase
             ]
         ];
 
+        $calculatedResults = $this->tripService->getCalculatedResults();
+
         $this->assertEquals($driverNames, $actualResult['drivers']);
         $this->assertEquals($expectedTrips, $actualResult['trips']);
+        $this->assertCalculatedResults($calculatedResults);
     }
 
+    public function testUsingInputFile()
+    {
+        $this->tripService->processInputFile(__DIR__ .'/sampleInputFixture');
 
+        $calculatedResults = $this->tripService->getCalculatedResults();
 
+        $this->assertCalculatedResults($calculatedResults);
+    }
+
+    public function assertCalculatedResults(array $calculatedResults): void
+    {
+        $this->assertEquals([
+            'driverName' => 'Lauren',
+            'mph' => 34.0,
+            'totalMilesDriven' => 42.0
+        ], $calculatedResults[0]->toArray());
+
+        $this->assertEquals([
+            'driverName' => 'Dan',
+            'mph' => 47.0,
+            'totalMilesDriven' => 39.0
+        ], $calculatedResults[1]->toArray());
+
+        $this->assertEquals([
+            'driverName' => 'Kumi',
+            'mph' => 0,
+            'totalMilesDriven' => 0
+        ], $calculatedResults[2]->toArray());
+    }
 
 }

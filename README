@@ -2,6 +2,29 @@
 >> composer install
 >> vendor/bin/phpunit tests
 
+### How to Use `Driver` and `Trip` command?
+1. Add new driver (examples below)
+>> php src/Command.php Driver Dan
+>> php src/Command.php Driver Lauren
+>> php src/Command.php Driver Kumi
 
-## How to run the command?
->> php venbdor.
+2. Add Trips (example below)
+>> php src/Command.php Trip Dan 07:15 07:45 17.3
+>> php src/Command.php Trip Dan 06:12 06:32 21.8
+>> php src/Command.php Trip Lauren 12:01 13:16 42.0
+
+3. All the results from the "Driver" and "Trip" are stored
+in the storage file. In order to calculate the final results,
+please use the "Calculate" command.
+>> php src/Command.php Calculate
+
+
+
+### How to run the command to process input file?
+- Test input file for trip calculation
+>> php src/Command.php sampleInput.txt
+where:
+`src/Command.php` is the actual command
+`sampleInput.txt` is the command input file
+
+

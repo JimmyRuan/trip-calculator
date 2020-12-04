@@ -24,4 +24,13 @@ class TripResultDataTransferObject {
         $this->mph = $mph;
         $this->totalMilesDriven = $totalMilesDriven;
     }
+
+    public function toArray()
+    {
+        return [
+            'driverName' => $this->driverName,
+            'mph' => $this->mph,
+            'totalMilesDriven' => $this->totalMilesDriven
+        ];
+    }
 }

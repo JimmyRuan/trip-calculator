@@ -91,45 +91,42 @@ Class Trip {
         return new TripResultDataTransferObject($driverName, $mph, $totalMiles);
     }
 
-    public function showAllResult()
+    public function extractResults(): array
     {
-        if(! isset($this->store['trips']) ||
+        if (!isset($this->store['trips']) ||
             empty($this->store['trips']) ||
-            ! is_array($this->store['trips'])){
+            !is_array($this->store['trips'])) {
             die('There is no trips specified so far');
         }
 
         $result = [];
 
-        foreach($this->store['drivers'] as $driverName){
+        foreach ($this->store['drivers'] as $driverName) {
             $totalTime = 0;
             $totalMiles = 0;
             $trips = $this->store['trips'][$driverName] ?? null;
 
-            if(! $trips){
+            if (!$trips) {
                 $result[] = $this->getDriveTrip($driverName, 0, 0);
 
                 continue;
             }
 
-            foreach($trips as $trip){
+            foreach ($trips as $trip) {
                 $totalTime = $totalTime + $trip['total_hours'];
                 $totalMiles = round($totalMiles + $trip['total_miles']);
             }
 
-            $mph = round($totalMiles/$totalTime);
+            $mph = round($totalMiles / $totalTime);
             $result[] = $this->getDriveTrip($driverName, $totalMiles, $mph);
         }
 
 
-
-        if(! empty($result)){
-            usort($result, function(TripResultDataTransferObject  $left, TripResultDataTransferObject  $right){
-                return $left->totalMilesDriven >  $right->totalMilesDriven ? -1 : 1;
+        if (!empty($result)) {
+            usort($result, function (TripResultDataTransferObject $left, TripResultDataTransferObject $right) {
+                return $left->totalMilesDriven > $right->totalMilesDriven ? -1 : 1;
             });
         }
-
-        self::printAllResult($result);
         return $result;
     }
 }
